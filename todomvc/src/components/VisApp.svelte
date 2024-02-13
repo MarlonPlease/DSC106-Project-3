@@ -52,8 +52,8 @@
   let filteredData = [];
 
   // Function to handle user's year selection
-  function handleYearChange(event) {
-    selectedYear = parseInt(event.target.value);
+  function handleYearChange(yearValue) {
+    selectedYear = yearValue;
     // Filter top 5 countries for the selected year
     filteredData = yearsData.find(item => item.value === selectedYear).top5Countries;
     // Render the chart with the filtered data
@@ -118,17 +118,34 @@
   });
 </script>
 
-<div>
-  <label for="year">Select Year:</label>
-  <select id="year" bind:value={selectedYear} on:change={handleYearChange}>
-    {#each yearsData as year}
-      <option value={year.value}>{year.label}</option>
-    {/each}
-  </select>
+<div id="year-container">
+  {#each yearsData as year}
+    <button class="year-button" on:click={() => handleYearChange(year.value)}>{year.label}</button>
+  {/each}
 </div>
 
 <div id="chart"></div>
 
 <style>
-  /* Your styles go here */
+  body {
+    display: flex;
+    justify-content: center;
+  }
+
+  #year-container {
+    display: flex;
+    overflow-x: auto;
+    white-space: nowrap;
+    width: 500px; /* Adjust this value as needed */
+    margin: 0 auto; /* Center the container horizontally */
+    padding-right: 0px; /* Add padding to the right to accommodate the scrollbar */
+    padding-bottom: 20px;
+  }
+
+  .year-button {
+    flex: 0 0 auto;
+    margin-right: 10px;
+    /* Add additional styles for the year buttons as needed */
+  }
 </style>
+
