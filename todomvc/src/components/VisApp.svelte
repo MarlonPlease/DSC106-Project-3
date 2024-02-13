@@ -4,7 +4,7 @@
 
   // Constants for chart dimensions
   const margin = { top: 40, right: 20, bottom: 70, left: 60 }; // Increased top margin
-  const width = 600 - margin.left - margin.right;
+  const width = 750 - margin.left - margin.right;
   const height = 300 - margin.top - margin.bottom;
 
   // Input data received from the parent component
@@ -151,7 +151,7 @@ function renderChart() {
     display: flex;
     overflow-x: auto;
     white-space: nowrap;
-    width: 500px; /* Adjust this value as needed */
+    width: 700px; /* Adjust this value as needed */
     margin: 0 auto; /* Center the container horizontally */
     padding-right: 0px; /* Add padding to the right to accommodate the scrollbar */
     padding-bottom: 20px;
