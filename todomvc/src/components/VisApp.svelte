@@ -3,7 +3,7 @@
   import * as d3 from 'd3'; // Import all d3 modules
 
   // Constants for chart dimensions
-  const margin = { top: 20, right: 20, bottom: 70, left: 60 };
+  const margin = { top: 40, right: 20, bottom: 70, left: 60 }; // Increased top margin
   const width = 600 - margin.left - margin.right;
   const height = 300 - margin.top - margin.bottom;
 
@@ -98,7 +98,16 @@
     svg.append("g")
       .call(d3.axisLeft(y));
 
-    // Log the current countries showing up along with the selected year
+    // Add text element to display the selected year above the chart
+    svg.append("text")
+      .attr("x", width / 2)
+      .attr("y", -margin.top / 2)
+      .attr("text-anchor", "middle")
+      .style("font-size", "20px") // Larger font size
+      .style("padding-top", "10px") // Padding above the text
+      .style("padding-bottom", "10px") // Padding below the text
+      .text(`Selected Year: ${selectedYear}`);
+
     console.log(`Year ${selectedYear}:`, filteredData.map(d => d.Entity));
   }
 
@@ -148,4 +157,3 @@
     /* Add additional styles for the year buttons as needed */
   }
 </style>
-
