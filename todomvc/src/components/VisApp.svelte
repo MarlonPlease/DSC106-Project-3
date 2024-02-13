@@ -98,12 +98,25 @@
 
   // Function to handle mouseenter event for the bars
   function handleMouseEnter(event, d) {
+    const originalColor = d3.select(event.target).attr("fill");
+
     // Change the fill color of the bar to blue
     d3.select(event.target)
-      .attr("fill", "steelblue");
+    .transition()
+    .duration(200)
+    .attr("fill", d3.interpolateOranges(d3.randomUniform(0.25, 1)()));
     // Show tooltip
     const [x, y] = d3.pointer(event);
     showTooltip(d, x, y);
+
+    d3.select(event.target)
+    .on("mouseleave", function() {
+      d3.select(this)
+        .transition()
+        .duration(200)
+        .attr("fill", originalColor);
+      hideTooltip();
+    });
   }
 
   // Function to handle mouseleave event for the bars
