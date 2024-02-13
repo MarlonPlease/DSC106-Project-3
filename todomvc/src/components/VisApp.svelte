@@ -111,7 +111,7 @@ function renderChart() {
         .style("font-size", "20px") // Larger font size
         .style("padding-top", "10px") // Padding above the text
         .style("padding-bottom", "10px") // Padding below the text
-        .text(`Selected Year: ${selectedYear}`);
+        .text(`Top 5 Primary Energy Consumers (Per Capita) in ${selectedYear}`);
 
     console.log(`Year ${selectedYear}:`, filteredData.map(d => d.Entity));
 }
@@ -123,7 +123,7 @@ function renderChart() {
     yearsData = processData(jsonData);
 
     // Set default selected year to the first available year
-    selectedYear = yearsData[0].value;
+    selectedYear = 2005;
 
     // Filter top 5 countries for the default selected year
     filteredData = yearsData.find(item => item.value === selectedYear).top5Countries;
