@@ -122,7 +122,8 @@ function renderChart() {
         .style("padding-bottom", "10px") // Padding below the text
         .text(`Top 5 Primary Energy Consumers (Per Capita) in ${selectedYear}`);
 
-    console.log(`Year ${selectedYear}:`, filteredData.map(d => d.Entity));
+    const logStatement = filteredData.map(d => `${d.Entity}: ${d["Primary energy consumption per capita (kWh/person)"]}`).join(', ');
+    console.log(`Year ${selectedYear}: ${logStatement}`);
 }
 
 
