@@ -3,9 +3,9 @@
   import * as d3 from 'd3'; // Import all d3 modules
 
   // Constants for chart dimensions
-  const margin = { top: 40, right: 20, bottom: 70, left: 60 }; // Increased top margin
-  const width = 750 - margin.left - margin.right;
-  const height = 300 - margin.top - margin.bottom;
+  const margin = { top: 40, right: 80, bottom: 70, left: 80 }; // Increased top margin
+  const width = 850 - margin.left - margin.right;
+  const height = 550 - margin.top - margin.bottom;
 
   // Input data received from the parent component
   export let jsonData;
@@ -102,6 +102,15 @@ function renderChart() {
 
     svg.append("g")
         .call(d3.axisLeft(y));
+
+    // Add y-axis label
+    svg.append("text")
+        .attr("transform", "rotate(-90)")
+        .attr("y", 0 - margin.left)
+        .attr("x", 0 - (height / 2))
+        .attr("dy", "1em")
+        .style("text-anchor", "middle")
+        .text("Primary energy consumption (kWh/person)");
 
     // Add text element to display the selected year above the chart
     svg.append("text")
