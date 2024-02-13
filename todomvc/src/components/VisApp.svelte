@@ -61,55 +61,61 @@
   }
 
   // Function to render the chart
-  function renderChart() {
+// Function to render the chart
+
+function renderChart() {
     // Remove existing SVG elements
     d3.select("#chart svg").remove();
 
     // Create the SVG element
     const svg = d3.select("#chart")
-      .append("svg")
-      .attr("width", width + margin.left + margin.right)
-      .attr("height", height + margin.top + margin.bottom)
-      .append("g")
-      .attr("transform", `translate(${margin.left},${margin.top})`);
+        .append("svg")
+        .attr("width", width + margin.left + margin.right)
+        .attr("height", height + margin.top + margin.bottom)
+        .append("g")
+        .attr("transform", `translate(${margin.left},${margin.top})`);
+
+    // Calculate the maximum value of energy consumption per capita across all years
+    const maxEnergyConsumption = d3.max(yearsData.flatMap(year => year.top5Countries), d => d["Primary energy consumption per capita (kWh/person)"]);
 
     // Create scales
     const x = d3.scaleBand().range([0, width]).padding(0.1);
     const y = d3.scaleLinear().range([height, 0]);
 
     x.domain(filteredData.map(d => d.Entity));
-    y.domain([0, d3.max(filteredData, d => d["Primary energy consumption per capita (kWh/person)"])]);
+    y.domain([0, maxEnergyConsumption]); // Set the y-axis domain dynamically
 
     // Add bars
     svg.selectAll(".bar")
-      .data(filteredData)
-      .enter().append("rect")
-      .attr("class", "bar")
-      .attr("x", d => x(d.Entity))
-      .attr("width", x.bandwidth())
-      .attr("y", d => y(d["Primary energy consumption per capita (kWh/person)"]))
-      .attr("height", d => height - y(d["Primary energy consumption per capita (kWh/person)"]));
+        .data(filteredData)
+        .enter().append("rect")
+        .attr("class", "bar")
+        .attr("x", d => x(d.Entity))
+        .attr("width", x.bandwidth())
+        .attr("y", d => y(d["Primary energy consumption per capita (kWh/person)"]))
+        .attr("height", d => height - y(d["Primary energy consumption per capita (kWh/person)"]));
 
     // Add axes
     svg.append("g")
-      .attr("transform", `translate(0,${height})`)
-      .call(d3.axisBottom(x));
+        .attr("transform", `translate(0,${height})`)
+        .call(d3.axisBottom(x));
 
     svg.append("g")
-      .call(d3.axisLeft(y));
+        .call(d3.axisLeft(y));
 
     // Add text element to display the selected year above the chart
     svg.append("text")
-      .attr("x", width / 2)
-      .attr("y", -margin.top / 2)
-      .attr("text-anchor", "middle")
-      .style("font-size", "20px") // Larger font size
-      .style("padding-top", "10px") // Padding above the text
-      .style("padding-bottom", "10px") // Padding below the text
-      .text(`Selected Year: ${selectedYear}`);
+        .attr("x", width / 2)
+        .attr("y", -margin.top / 2)
+        .attr("text-anchor", "middle")
+        .style("font-size", "20px") // Larger font size
+        .style("padding-top", "10px") // Padding above the text
+        .style("padding-bottom", "10px") // Padding below the text
+        .text(`Selected Year: ${selectedYear}`);
 
     console.log(`Year ${selectedYear}:`, filteredData.map(d => d.Entity));
-  }
+}
+
 
   let yearsData = [];
 
