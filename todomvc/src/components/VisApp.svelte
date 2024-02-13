@@ -1,0 +1,134 @@
+<script>
+  import { onMount } from 'svelte';
+  import * as d3 from 'd3'; // Import all d3 modules
+
+  // Constants for chart dimensions
+  const margin = { top: 20, right: 20, bottom: 70, left: 60 };
+  const width = 600 - margin.left - margin.right;
+  const height = 300 - margin.top - margin.bottom;
+
+  // Input data received from the parent component
+  export let jsonData;
+
+  // Function to process data
+  function processData(data) {
+    // Extract unique years from the data
+    const uniqueYears = Array.from(new Set(data.map(entry => entry.Year)));
+    // Sort years in ascending order
+    uniqueYears.sort((a, b) => a - b);
+
+    // Format data for the chart
+    return uniqueYears.map(year => ({
+      label: year,
+      value: year,
+      top5Countries: getTop5CountriesForYear(data, year)
+    }));
+  }
+
+  // Function to filter top 5 countries for a given year
+  function getTop5CountriesForYear(data, year) {
+    // Filter data for the specified year
+    const yearData = data.filter(entry => entry.Year === year);
+
+    // Sort filtered data by energy consumption per capita
+    yearData.sort((a, b) => b["Primary energy consumption per capita (kWh/person)"] - a["Primary energy consumption per capita (kWh/person)"]);
+
+    // Take the top 5 countries
+    const top5Countries = yearData.slice(0, 5);
+
+    // Format data for the chart
+    return top5Countries.map(entry => ({
+      "Entity": entry.Entity,
+      "Code": entry.Code ? entry.Code : "N/A",
+      "Year": entry.Year ? entry.Year : "N/A",
+      "Primary energy consumption per capita (kWh/person)": entry["Primary energy consumption per capita (kWh/person)"] ? entry["Primary energy consumption per capita (kWh/person)"] : "N/A"
+    }));
+  }
+
+  // State to hold the selected year
+  let selectedYear;
+
+  // State to hold the filtered data based on the selected year
+  let filteredData = [];
+
+  // Function to handle user's year selection
+  function handleYearChange(event) {
+    selectedYear = parseInt(event.target.value);
+    // Filter top 5 countries for the selected year
+    filteredData = yearsData.find(item => item.value === selectedYear).top5Countries;
+    // Render the chart with the filtered data
+    renderChart();
+  }
+
+  // Function to render the chart
+  function renderChart() {
+    // Remove existing SVG elements
+    d3.select("#chart svg").remove();
+
+    // Create the SVG element
+    const svg = d3.select("#chart")
+      .append("svg")
+      .attr("width", width + margin.left + margin.right)
+      .attr("height", height + margin.top + margin.bottom)
+      .append("g")
+      .attr("transform", `translate(${margin.left},${margin.top})`);
+
+    // Create scales
+    const x = d3.scaleBand().range([0, width]).padding(0.1);
+    const y = d3.scaleLinear().range([height, 0]);
+
+    x.domain(filteredData.map(d => d.Entity));
+    y.domain([0, d3.max(filteredData, d => d["Primary energy consumption per capita (kWh/person)"])]);
+
+    // Add bars
+    svg.selectAll(".bar")
+      .data(filteredData)
+      .enter().append("rect")
+      .attr("class", "bar")
+      .attr("x", d => x(d.Entity))
+      .attr("width", x.bandwidth())
+      .attr("y", d => y(d["Primary energy consumption per capita (kWh/person)"]))
+      .attr("height", d => height - y(d["Primary energy consumption per capita (kWh/person)"]));
+
+    // Add axes
+    svg.append("g")
+      .attr("transform", `translate(0,${height})`)
+      .call(d3.axisBottom(x));
+
+    svg.append("g")
+      .call(d3.axisLeft(y));
+
+    // Log the current countries showing up along with the selected year
+    console.log(`Year ${selectedYear}:`, filteredData.map(d => d.Entity));
+  }
+
+  let yearsData = [];
+
+  onMount(() => {
+    yearsData = processData(jsonData);
+
+    // Set default selected year to the first available year
+    selectedYear = yearsData[0].value;
+
+    // Filter top 5 countries for the default selected year
+    filteredData = yearsData.find(item => item.value === selectedYear).top5Countries;
+
+    // Render the chart with the filtered data
+    renderChart();
+  });
+</script>
+
+<div>
+  <label for="year">Select Year:</label>
+  <select id="year" bind:value={selectedYear} on:change={handleYearChange}>
+    {#each yearsData as year}
+      <option value={year.value}>{year.label}</option>
+    {/each}
+  </select>
+</div>
+
+<div id="chart"></div>
+
+<style>
+  /* Your styles go here */
+</style>
