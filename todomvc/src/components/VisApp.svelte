@@ -96,6 +96,25 @@
     document.getElementById('tooltip').innerHTML = '';
   }
 
+  // Function to handle mouseenter event for the bars
+  function handleMouseEnter(event, d) {
+    // Change the fill color of the bar to blue
+    d3.select(event.target)
+      .attr("fill", "steelblue");
+    // Show tooltip
+    const [x, y] = d3.pointer(event);
+    showTooltip(d, x, y);
+  }
+
+  // Function to handle mouseleave event for the bars
+  function handleMouseLeave(event, d) {
+    // Change the fill color of the bar back to its original color
+    d3.select(event.target)
+      .attr("fill", "lightblue");
+    // Hide tooltip
+    hideTooltip();
+  }
+
   // Function to render the chart
   function renderChart() {
     // Remove existing SVG elements
@@ -128,13 +147,9 @@
         .attr("width", x.bandwidth())
         .attr("y", d => y(d["Primary energy consumption per capita (kWh/person)"]))
         .attr("height", d => height - y(d["Primary energy consumption per capita (kWh/person)"]))
-        .on("mouseenter", function(event, d) {
-          const [x, y] = d3.pointer(event);
-          showTooltip(d, x, y);
-        })
-        .on("mouseleave", function() {
-          hideTooltip();
-        });
+        .attr("fill", "lightblue") // Set initial fill color
+        .on("mouseenter", handleMouseEnter)
+        .on("mouseleave", handleMouseLeave);
 
     // Add axes
     svg.append("g")
@@ -200,6 +215,13 @@
     /* Add additional styles for the year buttons as needed */
   }
 
+  /* Bar styles */
+  .bar {
+    fill: lightblue;
+    transition: fill 0.3s; /* Smooth transition for color change */
+  }
+
+  /* Tooltip styles */
   #tooltip {
     position: absolute;
     background-color: rgba(0, 0, 0, 0.7);
