@@ -60,10 +60,44 @@
     renderChart();
   }
 
-  // Function to render the chart
-// Function to render the chart
+  let yearsData = [];
 
-function renderChart() {
+  onMount(() => {
+    yearsData = processData(jsonData);
+
+    // Set default selected year to the first available year
+    selectedYear = 2005;
+
+    // Filter top 5 countries for the default selected year
+    filteredData = yearsData.find(item => item.value === selectedYear).top5Countries;
+
+    // Render the chart with the filtered data
+    renderChart();
+  });
+
+  let tooltipVisible = false;
+  let tooltipData = {};
+
+  // Function to show the tooltip
+  function showTooltip(data, x, y) {
+    tooltipData = data;
+    tooltipVisible = true;
+    // Update tooltip position and content
+    const tooltip = document.getElementById('tooltip');
+    tooltip.style.left = `${x}px`;
+    tooltip.style.top = `${y}px`;
+    tooltip.innerHTML = `${data.Entity}: ${data["Primary energy consumption per capita (kWh/person)"]} kWh/person`;
+  }
+
+  // Function to hide the tooltip
+  function hideTooltip() {
+    tooltipVisible = false;
+    // Clear tooltip content
+    document.getElementById('tooltip').innerHTML = '';
+  }
+
+  // Function to render the chart
+  function renderChart() {
     // Remove existing SVG elements
     d3.select("#chart svg").remove();
 
@@ -93,7 +127,14 @@ function renderChart() {
         .attr("x", d => x(d.Entity))
         .attr("width", x.bandwidth())
         .attr("y", d => y(d["Primary energy consumption per capita (kWh/person)"]))
-        .attr("height", d => height - y(d["Primary energy consumption per capita (kWh/person)"]));
+        .attr("height", d => height - y(d["Primary energy consumption per capita (kWh/person)"]))
+        .on("mouseenter", function(event, d) {
+          const [x, y] = d3.pointer(event);
+          showTooltip(d, x, y);
+        })
+        .on("mouseleave", function() {
+          hideTooltip();
+        });
 
     // Add axes
     svg.append("g")
@@ -124,23 +165,7 @@ function renderChart() {
 
     const logStatement = filteredData.map(d => `${d.Entity}: ${d["Primary energy consumption per capita (kWh/person)"]}`).join(', ');
     console.log(`Year ${selectedYear}: ${logStatement}`);
-}
-
-
-  let yearsData = [];
-
-  onMount(() => {
-    yearsData = processData(jsonData);
-
-    // Set default selected year to the first available year
-    selectedYear = 2005;
-
-    // Filter top 5 countries for the default selected year
-    filteredData = yearsData.find(item => item.value === selectedYear).top5Countries;
-
-    // Render the chart with the filtered data
-    renderChart();
-  });
+  }
 </script>
 
 <div id="year-container">
@@ -150,6 +175,8 @@ function renderChart() {
 </div>
 
 <div id="chart"></div>
+
+<div id="tooltip" class="{tooltipVisible ? 'visible' : ''}"></div>
 
 <style>
   body {
@@ -171,5 +198,19 @@ function renderChart() {
     flex: 0 0 auto;
     margin-right: 10px;
     /* Add additional styles for the year buttons as needed */
+  }
+
+  #tooltip {
+    position: absolute;
+    background-color: rgba(0, 0, 0, 0.7);
+    color: white;
+    padding: 5px;
+    border-radius: 5px;
+    pointer-events: none;
+    display: none;
+  }
+
+  #tooltip.visible {
+    display: block;
   }
 </style>
