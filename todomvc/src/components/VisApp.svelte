@@ -120,13 +120,16 @@
   }
 
   // Function to handle mouseleave event for the bars
-  function handleMouseLeave(event, d) {
+  function handleMouseLeave(event, d, originalColor) {
     // Change the fill color of the bar back to its original color
     d3.select(event.target)
-      .attr("fill", "lightblue");
-    // Hide tooltip
-    hideTooltip();
+    .transition()
+    .duration(100)
+    .attr("fill", originalColor);
+  // Hide tooltip
+  hideTooltip();
   }
+  
 
   // Function to render the chart
   function renderChart() {
