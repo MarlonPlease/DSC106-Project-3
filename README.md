@@ -1,22 +1,10 @@
-# create-svelte
+# About
 
-## Generate static site using svelte SSG
+The dataset we selected for our interactive visualization graph comprises the energy per capita consumption data provided by Our World in Data, containing information on the years 1900 to 2022. Upon examining the data, our focus turned to identifying the top 5 primary energy consumers per capita from 1965 to 2022. Our objective was to create an interactive bar graph that answers the question: 'What were the top consumers of energy per capita in a given year?
 
-To assist you in creating a static webpage for GitHub Pages using Svelte, we have developed a template for you: [ShaokangJiang/svelte-template (github.com)](https://github.com/ShaokangJiang/svelte-template).
+The first interactive component of our bar graph allows users to select a specific year and observe the top 5 primary energy-consuming countries. In this setup, the x-axis represents countries, while the y-axis represents primary energy consumption (kWh/person). We implemented a function using a click event, handled by the function called handleYearChange(), which updates the graph depending on the selected year. This function is triggered by clicking HTML buttons containing the years of the data. This setup the bar graph to update dynamically as the user switches the year. To make use of screen space, we incorporated a horizontal scrollbar to contain the HTML buttons, which allows navigation of the years of the dataset. Another interactive feature of our graph enables users to hover over the bars and view the precise kilowatt-hour of energy consumption for a particular country. Visually, the bars change color upon hovering, transitioning from light orange to red, allowing for differentiation among the top 5 countries using the “hover” feature, along with additional information displayed to the user based on what bar the mouse was hovering over. Initially, we considered creating a choropleth graph to highlight the top 5 countries, however, due to the complexity of implementation in d3, we opted for a bar graph. In the future, we aim to experiment with creating a choropleth graph using d3.
 
-Please follow the link provided, and initiate the creation of a new repository.
-
-![image-20240210175403813](./assets/image-20240210175403813.png)
-
-After GitHub completes the cloning process, navigate to the settings page. On the left panel, under the "Pages" tab, locate the "Source" section and select "GitHub Actions" as the source. 
-
-Clone this repository and proceed with your work. Upon completion, commit and push your changes. The corresponding GitHub Actions will then execute, building a static website hosted at `https://your-username.github.io/your-repo-name` for you.
-
-![image-20240210175104365](./assets/image-20240210175104365.png)
-
-### Migrate from your project
-
-If you have started on the project and want to switch to using this template, you can copy your `src` folder, go to the local clone of your version of this template, then paste it. When it says the file exists, simply click replace, and you can continue working on your version of this template.
+Amongst our 3 group members, Marlon, Derrick, and Sai, Derrick found the dataset and converted the CSV from the website into a JSON file for JavaScript readability and console outputs for testing our functions. We all had Zoom meetings to review the data and decide on the question we wanted our graph to answer. Derrick assisted with setting up the Svelte components and initial settings. When coding the graph in d3, Sai implemented the scroll bar for selecting the year, while Marlon created the text titles and handled the HTML formatting. Additionally, we all collaborated on creating the hovering effects for the bars. The aspect that took the most time was creating the scroll bar for selecting a year, as the graph was not updating based on the year chosen, requiring us to research and reimplement our code to allow for the bars to update. Another challenging task was making the bars dynamic using the "hover" function. Our application took approximately 12-ish hours to implement.
 
 ## Setup
 
